@@ -308,7 +308,7 @@ void LightSim::paintEvent(QPaintEvent *)
 
         painter.drawEllipse(80,0,18,18);
     //      painter.drawLine(88, 0, 96, 0);
-        painter.rotate(22.5);
+        painter.rotate(-22.5);
     }
 
 
