@@ -1,35 +1,13 @@
 #include <QtWidgets>
 
-#include "lightsim.h"
 #include "libfixmath/libfixmath/fixmath.h"
-
-
-static void ledSetRGB(void *ptr, int x, uint8_t r, uint8_t g, uint8_t b, uint8_t shift);
+#include "lightsim.h"
 
 #define NUMLED 16
 static uint8_t simfb[NUMLED*3];
 
-typedef struct Color Color;
-struct Color {
-  uint8_t g;
-  uint8_t r;
-  uint8_t b;
-};
-
-typedef struct effects_config {
-  struct led_config *hwconfig;
-  uint32_t count;
-  uint32_t loop;
-} effects_config;
-
-static struct led_config {
-  uint8_t       *fb; // effects frame buffer
-  uint32_t      pixel_count;  // generated pixel length
-  uint32_t      max_pixels;   // maximal generation length
-} led_config;
-
 static effects_config fx_config;
-static uint8_t shift = 0;  // start a little bit dimmer
+uint8_t shift = 0;  // start a little bit dimmer
 
 static uint32_t bump_amount = 0;
 static uint8_t bumped = 0;
@@ -45,7 +23,9 @@ static uint32_t timeMS = 0;  // simulate chVTGetSystemTime() call using QT
 
 static int wavesign = -1;
 
-static void ledSetRGB(void *ptr, int x, uint8_t r, uint8_t g, uint8_t b, uint8_t shift) {
+extern void lightGeneFB(struct effects_config *config);
+
+void ledSetRGB(void *ptr, int x, uint8_t r, uint8_t g, uint8_t b, uint8_t shift) {
   uint8_t *buf = ((uint8_t *)ptr) + (3 * x);
   buf[0] = g >> shift;
   buf[1] = r >> shift;
@@ -119,14 +99,14 @@ static Color Wheel(uint8_t wheelPos) {
   return c;
 }
 
-static void ledSetColor(void *ptr, int x, Color c, uint8_t shift) {
+void ledSetColor(void *ptr, int x, Color c, uint8_t shift) {
   uint8_t *buf = ((uint8_t *)ptr) + (3 * x);
   buf[0] = c.g >> shift;
   buf[1] = c.r >> shift;
   buf[2] = c.b >> shift;
 }
 
-static Color ledGetColor(void *ptr, int x) {
+Color ledGetColor(void *ptr, int x) {
   Color c;
   uint8_t *buf = ((uint8_t *)ptr) + (3 * x);
 
@@ -255,11 +235,9 @@ static void draw_pattern(void) {
         fx_config.loop += bump_amount;
         bump_amount = 0;
     }
-    waveRainbowFB(&fx_config);
-
+    //    waveRainbowFB(&fx_config);
+    lightGeneFB(&fx_config);
 }
-
-
 
 void LightSim::paintEvent(QPaintEvent *)
 {

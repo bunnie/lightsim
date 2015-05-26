@@ -13,7 +13,9 @@ SOURCES       = lightsim.cpp \
     libfixmath/libfixmath/fix16_str.c \
     libfixmath/libfixmath/fix16_trig.c \
     libfixmath/libfixmath/fract32.c \
-    libfixmath/libfixmath/uint32.c
+    libfixmath/libfixmath/uint32.c \
+    lightgene.cpp \
+    hsvrgb.cpp
 
 QMAKE_PROJECT_NAME = lightsim
 

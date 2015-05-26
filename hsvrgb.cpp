@@ -1,3 +1,5 @@
+#include "lightsim.h"
+
 RgbColor HsvToRgb(HsvColor hsv)
 {
     RgbColor rgb;
